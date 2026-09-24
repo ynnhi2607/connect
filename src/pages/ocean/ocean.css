@@ -1,0 +1,59 @@
+.ocean-page { --depth: 0; position: relative; isolation: isolate; background: #030810; color: #e9eee9; font-family: 'Geist Variable', sans-serif; letter-spacing: 0; }
+.ocean-backdrop { position: fixed; inset: 0; z-index: -2; background: #081724 url('/images/deep-sea.png') center top / cover no-repeat; pointer-events: none; }
+.ocean-backdrop::after { content: ''; position: absolute; inset: 0; background: #02050b; opacity: calc(.12 + var(--depth) * .75); }
+.ocean-scene { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+.ocean-scene canvas { width: 100%; height: 100%; display: block; }
+.ocean-star-target { position: absolute; inset: 0 auto auto 0; width: 88px; height: 88px; border: 0; border-radius: 50%; background: transparent; pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ocean-page a { color: inherit; text-decoration: none; }
+.ocean-page a:focus-visible, .ocean-page button:focus-visible { outline: 2px solid #f5d88b; outline-offset: 6px; }
+.ocean-header { position: absolute; top: 0; left: 0; right: 0; z-index: 3; padding: 30px 48px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.ocean-wordmark { display: inline-flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 500; }
+.ocean-wordmark svg { color: #f1d58e; }
+.ocean-scroll { scroll-behavior: auto; overscroll-behavior-y: none; scrollbar-width: none; }
+.ocean-scroll::-webkit-scrollbar { display: none; }
+.ocean-panel { min-height: 100svh; position: relative; display: flex; flex-direction: column; align-items: center; padding: var(--safe-top, 450px) 24px 112px; text-align: center; scroll-snap-align: start; }
+.ocean-copy { margin-block: auto; max-width: 100%; }
+.ocean-copy[inert] { pointer-events: none; }
+.ocean-panel:focus { outline: none; }
+.ocean-hero-copy, .ocean-journey-copy { position: relative; z-index: 2; }
+.ocean-eyebrow { font-size: 10px; font-weight: 400; color: #a4bec3; margin: 0 0 22px; }
+.ocean-hero h1, .ocean-journey h2 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 62px; line-height: 1.05; margin: 0; text-wrap: balance; }
+.ocean-hero em, .ocean-journey em { color: #e8d9b2; font-weight: 400; }
+.ocean-description { color: #a5b6bc; font-size: 13px; line-height: 1.9; margin: 24px 0 27px; }
+.ocean-cta { display: inline-flex; gap: 26px; justify-content: center; align-items: center; min-height: 46px; padding: 0 23px; border: 1px solid #849da150; border-radius: 3px; font-size: 12px; background: #c1dce204; transition: background .25s, border-color .25s, color .25s; }
+.ocean-cta:hover { border-color: #efcf8c90; background: #e6cd8e0c; color: #ffe9b2; }
+.ocean-descent { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; align-items: center; flex-direction: column; gap: 17px; white-space: nowrap; font-size: 8px; color: #8a9ea5 !important; z-index: 2; padding-top: 15px; }
+.ocean-descent-line { height: 32px; width: 1px; background: #809da35c; }
+.ocean-journey { padding-bottom: 0; }
+.ocean-journey-copy { padding-bottom: 48px; }
+.ocean-journey h2 { font-size: 52px; }
+.ocean-depth { position: fixed; right: 35px; top: 45%; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 18px; font-size: 9px; color: #98adb6; font-variant-numeric: tabular-nums; width: 45px; }
+.ocean-depth-track { width: 1px; height: 104px; background: #a6c2cf25; position: relative; }
+.ocean-depth-track > span { position: absolute; width: 3px; height: 14px; left: -1px; top: calc(var(--depth) * 90px); background: #daca9e; }
+.ocean-footer { position: relative; z-index: 2; width: calc(100% + 48px); flex-shrink: 0; padding: 24px 48px 28px; display: flex; justify-content: space-between; gap: 24px; font-size: 10px; color: #92a3aa; border-top: 1px solid #adc5c512; }
+.ocean-footer a { display: flex; gap: 10px; align-items: center; }
+.ocean-mobile-break { display: none; }
+.ocean-skip { position: fixed; top: -100px; left: 20px; z-index: 10; padding: 12px; background: #0d2530; }
+.ocean-skip:focus { top: 15px; }
+@media (max-width: 600px) {
+  .ocean-header { padding: 19px 22px; }
+  .ocean-wordmark { font-size: 15px; gap: 7px; }
+  .ocean-panel { padding-inline: 30px; }
+  .ocean-hero h1 { font-size: 46px; }
+  .ocean-eyebrow { font-size: 8px; margin-bottom: 19px; }
+  .ocean-description { font-size: 12px; margin-top: 20px; margin-bottom: 23px; }
+  .ocean-mobile-break { display: block; }
+  .ocean-depth { right: 6px; font-size: 8px; width: 30px; }
+  .ocean-depth-track { height: 70px; }
+  .ocean-depth-track > span { top: calc(var(--depth) * 56px); }
+  .ocean-journey h2 { font-size: 43px; }
+  .ocean-footer { width: calc(100% + 60px); padding: 22px 24px; flex-wrap: wrap; justify-content: center; font-size: 9px; }
+  .ocean-footer > span:last-child { display: none; }
+}
+.ocean-scroll-expanded .ocean-panel { height: 100svh; padding-top: var(--safe-top); padding-bottom: 80px; }
+.ocean-scroll-expanded .ocean-journey { padding-bottom: 0; }
+.ocean-scroll-expanded .ocean-copy { min-height: 0; max-height: calc(100svh - var(--safe-top) - 80px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.ocean-scroll-expanded .ocean-journey-copy { max-height: calc(100svh - var(--safe-top) - var(--footer-height)); }
+.ocean-scroll-expanded .ocean-descent { bottom: 8px; gap: 6px; padding-top: 0; }
+.ocean-scroll-expanded .ocean-descent-line { height: 16px; }
+@media (prefers-reduced-motion: reduce) { .ocean-page *, .ocean-page *::after { transition: none !important; } }
