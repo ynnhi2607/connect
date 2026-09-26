@@ -8,7 +8,7 @@ This file provides guidance to OpenCode, Codex, and other coding agents working 
 - Product / app name:
 - Current visible brand in UI: `ConnectSpace`
 - App type: React single-page frontend
-- Main current surface: authentication page with login, registration, and active-session view
+- Main current surfaces: deep-ocean landing page and authentication page
 - Backend/API owner:
 - Deployment target:
 
@@ -25,15 +25,16 @@ Key stack:
 - shadcn-style component setup via `components.json`
 - Base UI primitives for shared UI components
 - lucide-react icons
-- OGL/WebGL for the `Galaxy` visual component
+- Canvas 2D for the interactive auth-page ocean backdrop
 
 ## Current App Shape
 
 Entry flow:
 
 1. `src/main.tsx` mounts React into `#root`.
-2. `src/App.tsx` renders `AuthPage`.
-3. `src/pages/auth/index.tsx` owns auth page state and form submission.
+2. `src/App.tsx` renders `OceanPage` at `/` and `AuthPage` at `/auth`.
+3. `src/pages/ocean/index.tsx` owns the two-scene landing experience.
+4. `src/pages/auth/index.tsx` owns auth page state and form submission.
 
 Implemented auth behavior:
 
@@ -48,16 +49,16 @@ Unknown / not confirmed:
 - Exact backend framework:
 - Production API base URL:
 - Auth token lifetime rules beyond the API response shape:
-- Route structure beyond the current auth page:
+- Route structure beyond `/` and `/auth`:
 
 ## Repo Map
 
 - `src/main.tsx` - React app bootstrap
 - `src/App.tsx` - current top-level app component
+- `src/pages/ocean/` - interactive deep-ocean landing page and its CSS
 - `src/pages/auth/` - auth page, auth-specific components, and auth CSS
 - `src/lib/auth.ts` - frontend API helpers and auth response types
 - `src/components/ui/` - shared UI primitives
-- `src/components/Galaxy.tsx` and `src/components/Galaxy.css` - reusable OGL/WebGL galaxy background component
 - `src/assets/` - frontend image/SVG assets
 - `public/` - static files served by Vite
 - `components.json` - shadcn-style aliases and UI configuration
@@ -151,7 +152,8 @@ Skip it for tiny, no-change tasks such as a single factual answer or a short rea
 
 - The root README is still the default Vite template and may not describe this product accurately.
 - The backend contract is inferred only from `src/lib/auth.ts` and the Vite proxy.
-- `Galaxy.tsx` is a WebGL/OGL component; verify canvas rendering after changing it.
+- `OceanBackdrop.tsx` draws an interactive Canvas 2D scene; verify canvas rendering after changing it.
+- Landing and auth should share the restrained deep-ocean palette, Instrument Serif display type, pale-gold highlights, and quiet motion.
 - The current app has no confirmed production deployment configuration in this repo.
 - Keep dependency and lockfile changes intentional; `package-lock.json` is committed.
 

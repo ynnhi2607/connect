@@ -1,26 +1,15 @@
-import { Sparkles } from 'lucide-react'
-
 function AuthHero() {
   return (
     <div className="auth-copy">
-      <div className="brand">
-        <span className="brand-mark">
-          <Sparkles aria-hidden="true" />
-        </span>
-        <span>ConnectSpace</span>
-      </div>
-
       <div className="headline">
-        <p>Private Space For Real Conversations</p>
-        <h1>Connect</h1>
-        <span>Where every message finds its own orbit.</span>
+        <p>A QUIET PLACE TO BELONG</p>
+        <h1>Return to<br /><em>your people.</em></h1>
+        <span>Your conversations are waiting below the surface.</span>
       </div>
 
-      <div className="signal-grid" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+      <div className="auth-depth-note" aria-hidden="true">
+        <span className="auth-depth-line" />
+        <span>1,200 m</span>
       </div>
     </div>
   )

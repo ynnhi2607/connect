@@ -1,5 +1,5 @@
-import type { FormEvent } from 'react'
-import { LockKeyhole, LogOut, Mail, Rocket, User } from 'lucide-react'
+import { type FormEvent, useState } from 'react'
+import { ArrowRight, Eye, EyeOff, LoaderCircle, LockKeyhole, LogOut, Mail, Sparkles, User } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import type { AuthUser } from '../../../lib/auth'
@@ -16,9 +16,10 @@ type AuthPanelProps = {
   mode: AuthMode
   form: AuthForm
   user: AuthUser | null
-  token: string
   isLoading: boolean
+  isRestoring: boolean
   message: string
+  hasError: boolean
   onModeChange: (mode: AuthMode) => void
   onFieldChange: (field: keyof AuthForm, value: string) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
@@ -29,43 +30,55 @@ function AuthPanel({
   mode,
   form,
   user,
-  token,
   isLoading,
+  isRestoring,
   message,
+  hasError,
   onModeChange,
   onFieldChange,
   onSubmit,
   onLogout,
 }: AuthPanelProps) {
+  const [showPassword, setShowPassword] = useState(false)
+
   return (
     <div className="auth-card">
-      {user ? (
+      {isRestoring ? (
+        <div className="auth-restoring" aria-live="polite">
+          <LoaderCircle aria-hidden="true" />
+          <span>Finding your connection...</span>
+        </div>
+      ) : user ? (
         <div className="session-card">
-          <div className="session-orbit" aria-hidden="true">
-            <Rocket />
-          </div>
-          <p className="eyebrow">Session Active</p>
-          <h2>Welcome, {user.name}</h2>
-          <p className="session-email">{user.email}</p>
-          <div className="token-preview">
-            <span>JWT</span>
-            <code>{token.slice(0, 24)}...</code>
-          </div>
-          <Button className="primary-action" type="button" onClick={onLogout}>
-            <LogOut aria-hidden="true" />
-            Sign out
+          <span className="session-mark" aria-hidden="true"><Sparkles /></span>
+          <p className="eyebrow">CONNECTION FOUND</p>
+          <h2>Welcome back,<br /><em>{user.name}</em></h2>
+          <p className="session-email">Signed in as {user.email}</p>
+          {message ? <p className="form-message" role="status">{message}</p> : null}
+          <a className="primary-action" href="/">
+            Return to the surface <ArrowRight aria-hidden="true" />
+          </a>
+          <Button className="secondary-action" type="button" variant="ghost" onClick={onLogout}>
+            <LogOut aria-hidden="true" /> Sign out
           </Button>
         </div>
       ) : (
         <>
           <div className="card-header">
-            <p className="eyebrow">Secure sign in</p>
-            <h2>{mode === 'login' ? 'Enter your space' : 'Create your account'}</h2>
+            <p className="eyebrow">A LITTLE LIGHT, KEPT SAFE</p>
+            <h2>{mode === 'login' ? <>Enter your<br /><em>quiet space.</em></> : <>Begin a<br /><em>deeper connection.</em></>}</h2>
+            <p className="card-support">
+              {mode === 'login'
+                ? 'Sign in to continue where you left off.'
+                : 'Create a place for the thoughts that matter.'}
+            </p>
           </div>
 
           <div className="mode-switch" role="tablist" aria-label="Auth mode">
             <button
               type="button"
+              role="tab"
+              aria-selected={mode === 'login'}
               className={mode === 'login' ? 'active' : ''}
               onClick={() => onModeChange('login')}
             >
@@ -73,6 +86,8 @@ function AuthPanel({
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={mode === 'register'}
               className={mode === 'register' ? 'active' : ''}
               onClick={() => onModeChange('register')}
             >
@@ -80,7 +95,7 @@ function AuthPanel({
             </button>
           </div>
 
-          <form className="auth-form" onSubmit={onSubmit}>
+          <form key={mode} className="auth-form" onSubmit={onSubmit}>
             {mode === 'register' ? (
               <label className="field">
                 <span>Name</span>
@@ -89,9 +104,10 @@ function AuthPanel({
                   <Input
                     required
                     minLength={2}
+                    autoComplete="name"
                     value={form.name}
                     onChange={(event) => onFieldChange('name', event.target.value)}
-                    placeholder="Alex Morgan"
+                    placeholder="How should we call you?"
                   />
                 </div>
               </label>
@@ -104,9 +120,10 @@ function AuthPanel({
                 <Input
                   required
                   type="email"
+                  autoComplete="email"
                   value={form.email}
                   onChange={(event) => onFieldChange('email', event.target.value)}
-                  placeholder="you@connect.space"
+                  placeholder="you@example.com"
                 />
               </div>
             </label>
@@ -117,24 +134,35 @@ function AuthPanel({
                 <LockKeyhole aria-hidden="true" />
                 <Input
                   required
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   minLength={6}
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                   value={form.password}
                   onChange={(event) => onFieldChange('password', event.target.value)}
                   placeholder="At least 6 characters"
                 />
+                <button
+                  className="password-toggle"
+                  type="button"
+                  onClick={() => setShowPassword(current => !current)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </button>
               </div>
             </label>
 
-            {message ? <p className="form-message">{message}</p> : null}
+            <p className={`form-message${hasError ? ' error' : ''}`} role={hasError ? 'alert' : 'status'} aria-live="polite">
+              {message}
+            </p>
 
             <Button className="primary-action" type="submit" disabled={isLoading}>
-              <Rocket aria-hidden="true" />
               {isLoading
-                ? 'Processing...'
+                ? <><LoaderCircle className="button-spinner" aria-hidden="true" /> Connecting...</>
                 : mode === 'login'
-                  ? 'Sign in'
-                  : 'Create account'}
+                  ? <>Find your connection <ArrowRight aria-hidden="true" /></>
+                  : <>Create your space <ArrowRight aria-hidden="true" /></>}
             </Button>
           </form>
         </>

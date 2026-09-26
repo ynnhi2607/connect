@@ -25,7 +25,7 @@
 .ocean-descent { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; align-items: center; flex-direction: column; gap: 17px; white-space: nowrap; font-size: 8px; color: #8a9ea5 !important; z-index: 2; padding-top: 15px; }
 .ocean-descent-line { height: 32px; width: 1px; background: #809da35c; }
 .ocean-journey { padding-bottom: 0; }
-.ocean-journey-copy { padding-bottom: 48px; }
+.ocean-journey-copy { padding-bottom: 80px; }
 .ocean-journey h2 { font-size: 52px; }
 .ocean-depth { position: fixed; right: 35px; top: 45%; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 18px; font-size: 9px; color: #98adb6; font-variant-numeric: tabular-nums; width: 45px; }
 .ocean-depth-track { width: 1px; height: 104px; background: #a6c2cf25; position: relative; }
@@ -47,13 +47,15 @@
   .ocean-depth-track { height: 70px; }
   .ocean-depth-track > span { top: calc(var(--depth) * 56px); }
   .ocean-journey h2 { font-size: 43px; }
+  .ocean-journey-copy { padding-bottom: 64px; }
   .ocean-footer { width: calc(100% + 60px); padding: 22px 24px; flex-wrap: wrap; justify-content: center; font-size: 9px; }
   .ocean-footer > span:last-child { display: none; }
 }
 .ocean-scroll-expanded .ocean-panel { height: 100svh; padding-top: var(--safe-top); padding-bottom: 80px; }
 .ocean-scroll-expanded .ocean-journey { padding-bottom: 0; }
-.ocean-scroll-expanded .ocean-copy { min-height: 0; max-height: calc(100svh - var(--safe-top) - 80px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
-.ocean-scroll-expanded .ocean-journey-copy { max-height: calc(100svh - var(--safe-top) - var(--footer-height)); }
+.ocean-scroll-expanded .ocean-copy { min-height: 0; max-height: calc(100svh - var(--safe-top) - 80px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.ocean-scroll-expanded .ocean-copy::-webkit-scrollbar { display: none; }
+.ocean-scroll-expanded .ocean-journey-copy { max-height: none; overflow: visible; overscroll-behavior: auto; }
 .ocean-scroll-expanded .ocean-descent { bottom: 8px; gap: 6px; padding-top: 0; }
 .ocean-scroll-expanded .ocean-descent-line { height: 16px; }
 @media (prefers-reduced-motion: reduce) { .ocean-page *, .ocean-page *::after { transition: none !important; } }

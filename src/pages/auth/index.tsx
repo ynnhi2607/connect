@@ -1,4 +1,5 @@
-import { type FormEvent, type PointerEvent, useEffect, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
+import { ArrowLeft, Sparkles } from 'lucide-react'
 import {
   type AuthUser,
   TOKEN_KEY,
@@ -8,7 +9,7 @@ import {
 } from '../../lib/auth'
 import AuthHero from './components/AuthHero'
 import AuthPanel, { type AuthForm, type AuthMode } from './components/AuthPanel'
-import Starfield from './components/Starfield'
+import OceanBackdrop from './components/OceanBackdrop'
 import './auth.css'
 
 function AuthPage() {
@@ -21,13 +22,12 @@ function AuthPage() {
     password: '',
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [isRestoring, setIsRestoring] = useState(Boolean(token))
   const [message, setMessage] = useState('')
+  const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
-    if (!token) {
-      setUser(null)
-      return
-    }
+    if (!token) return
 
     getMe(token)
       .then(setUser)
@@ -35,7 +35,14 @@ function AuthPage() {
         localStorage.removeItem(TOKEN_KEY)
         setToken('')
       })
+      .finally(() => setIsRestoring(false))
   }, [token])
+
+  useEffect(() => {
+    const oldTitle = document.title
+    document.title = 'ConnectSpace | Return to your people'
+    return () => { document.title = oldTitle }
+  }, [])
 
   function updateField(field: keyof AuthForm, value: string) {
     setForm((current) => ({ ...current, [field]: value }))
@@ -45,6 +52,7 @@ function AuthPage() {
     event.preventDefault()
     setIsLoading(true)
     setMessage('')
+    setHasError(false)
 
     try {
       const response =
@@ -59,8 +67,10 @@ function AuthPage() {
       localStorage.setItem(TOKEN_KEY, response.token)
       setToken(response.token)
       setUser(response.user)
-      setMessage('Signed in successfully')
+      setForm(current => ({ ...current, password: '' }))
+      setMessage('You are safely signed in.')
     } catch (error) {
+      setHasError(true)
       setMessage(error instanceof Error ? error.message : 'Unable to sign in')
     } finally {
       setIsLoading(false)
@@ -71,23 +81,30 @@ function AuthPage() {
     localStorage.removeItem(TOKEN_KEY)
     setToken('')
     setUser(null)
+    setIsRestoring(false)
     setMessage('')
+    setHasError(false)
   }
 
-  function handleSkyMove(event: PointerEvent<HTMLDivElement>) {
-    const bounds = event.currentTarget.getBoundingClientRect()
-    const x = ((event.clientX - bounds.left) / bounds.width) * 100
-    const y = ((event.clientY - bounds.top) / bounds.height) * 100
-
-    event.currentTarget.style.setProperty('--pointer-x', `${x}%`)
-    event.currentTarget.style.setProperty('--pointer-y', `${y}%`)
-    event.currentTarget.style.setProperty('--tilt-x', `${(y - 50) / 10}deg`)
-    event.currentTarget.style.setProperty('--tilt-y', `${(50 - x) / 10}deg`)
+  function handleModeChange(nextMode: AuthMode) {
+    setMode(nextMode)
+    setMessage('')
+    setHasError(false)
   }
 
   return (
-    <main className="auth-shell" onPointerMove={handleSkyMove}>
-      <Starfield />
+    <main className="auth-shell">
+      <div className="auth-ocean-image" aria-hidden="true" />
+      <OceanBackdrop />
+
+      <header className="auth-nav">
+        <a className="auth-brand" href="/" aria-label="ConnectSpace home">
+          <Sparkles size={18} strokeWidth={1.3} /> ConnectSpace
+        </a>
+        <a className="back-link" href="/">
+          <ArrowLeft size={14} strokeWidth={1.5} /> Back to the surface
+        </a>
+      </header>
 
       <section className="auth-stage">
         <AuthHero />
@@ -95,15 +112,18 @@ function AuthPage() {
           mode={mode}
           form={form}
           user={user}
-          token={token}
           isLoading={isLoading}
+          isRestoring={isRestoring}
           message={message}
-          onModeChange={setMode}
+          hasError={hasError}
+          onModeChange={handleModeChange}
           onFieldChange={updateField}
           onSubmit={handleSubmit}
           onLogout={handleLogout}
         />
       </section>
+
+      <footer className="auth-footer"><span>A little less alone.</span><span>ConnectSpace</span></footer>
     </main>
   )
 }

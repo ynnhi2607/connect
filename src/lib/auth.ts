@@ -42,7 +42,7 @@ async function apiRequest<T>(
 }
 
 async function readError(response: Response) {
-  const fallback = 'Co loi xay ra, thu lai nhe'
+  const fallback = 'Something went wrong. Please try again.'
 
   try {
     const body = (await response.json()) as {
